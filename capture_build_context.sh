@@ -4,7 +4,7 @@
 START_TIME=$(date +%s)
 
 # Run Docker build command and append output to docker_run_log.txt
-docker build --progress=plain -f sap-abap/$1.Dockerfile --no-cache . >> $1.txt 2>&1
+docker build --progress=plain -f sap-abap/$1.Dockerfile -t $1 --no-cache . >> $1.txt 2>&1
 
 # End time
 END_TIME=$(date +%s)
