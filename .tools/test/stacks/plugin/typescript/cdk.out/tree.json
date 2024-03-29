@@ -1,0 +1,1099 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "PluginStack-ruby": {
+        "id": "PluginStack-ruby",
+        "path": "PluginStack-ruby",
+        "children": {
+          "ExternalSNSTopic": {
+            "id": "ExternalSNSTopic",
+            "path": "PluginStack-ruby/ExternalSNSTopic",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sns.TopicBase",
+              "version": "2.95.1"
+            }
+          },
+          "BatchJobQueue-ruby": {
+            "id": "BatchJobQueue-ruby",
+            "path": "PluginStack-ruby/BatchJobQueue-ruby",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/BatchJobQueue-ruby/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {}
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.95.1"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "PluginStack-ruby/BatchJobQueue-ruby/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PluginStack-ruby/BatchJobQueue-ruby/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SQS::QueuePolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sqs:SendMessage",
+                              "Condition": {
+                                "ArnEquals": {
+                                  "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-admin-sns-fanout-topic"
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "sns.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuerubyC0D1183C",
+                                  "Arn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "queues": [
+                          {
+                            "Ref": "BatchJobQueuerubyC0D1183C"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sqs.CfnQueuePolicy",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.QueuePolicy",
+                  "version": "2.95.1"
+                }
+              },
+              "PluginStackrubyExternalSNSTopicC266389C": {
+                "id": "PluginStackrubyExternalSNSTopicC266389C",
+                "path": "PluginStack-ruby/BatchJobQueue-ruby/PluginStackrubyExternalSNSTopicC266389C",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PluginStack-ruby/BatchJobQueue-ruby/PluginStackrubyExternalSNSTopicC266389C/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SNS::Subscription",
+                      "aws:cdk:cloudformation:props": {
+                        "endpoint": {
+                          "Fn::GetAtt": [
+                            "BatchJobQueuerubyC0D1183C",
+                            "Arn"
+                          ]
+                        },
+                        "protocol": "sqs",
+                        "rawMessageDelivery": true,
+                        "region": "us-east-1",
+                        "topicArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-admin-sns-fanout-topic"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sns.CfnSubscription",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.Subscription",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.95.1"
+            }
+          },
+          "BatchExecutionRole-ruby": {
+            "id": "BatchExecutionRole-ruby",
+            "path": "PluginStack-ruby/BatchExecutionRole-ruby",
+            "children": {
+              "ImportBatchExecutionRole-ruby": {
+                "id": "ImportBatchExecutionRole-ruby",
+                "path": "PluginStack-ruby/BatchExecutionRole-ruby/ImportBatchExecutionRole-ruby",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/BatchExecutionRole-ruby/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "ecs-tasks.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/AdministratorAccess"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+                          ]
+                        ]
+                      }
+                    ],
+                    "policies": [
+                      {
+                        "policyName": "BatchLoggingPolicy",
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:DescribeLogStreams",
+                                "logs:PutLogEvents"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "arn:aws:logs:*:*:*"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    ],
+                    "roleName": "BatchExecutionRole-ruby"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.95.1"
+            }
+          },
+          "Vpc": {
+            "id": "Vpc",
+            "path": "PluginStack-ruby/Vpc",
+            "children": {
+              "PublicSubnet1": {
+                "id": "PublicSubnet1",
+                "path": "PluginStack-ruby/Vpc/PublicSubnet1",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "PublicSubnet2": {
+                "id": "PublicSubnet2",
+                "path": "PluginStack-ruby/Vpc/PublicSubnet2",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "PublicSubnet3": {
+                "id": "PublicSubnet3",
+                "path": "PluginStack-ruby/Vpc/PublicSubnet3",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "PublicSubnet4": {
+                "id": "PublicSubnet4",
+                "path": "PluginStack-ruby/Vpc/PublicSubnet4",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "PublicSubnet5": {
+                "id": "PublicSubnet5",
+                "path": "PluginStack-ruby/Vpc/PublicSubnet5",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "PublicSubnet6": {
+                "id": "PublicSubnet6",
+                "path": "PluginStack-ruby/Vpc/PublicSubnet6",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.95.1"
+            }
+          },
+          "sg": {
+            "id": "sg",
+            "path": "PluginStack-ruby/sg",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/sg/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "PluginStack-ruby/sg",
+                    "groupName": "batch-sg",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "vpcId": "vpc-08ee07dce7c63bf8e"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.95.1"
+            }
+          },
+          "FargateEnv-ruby": {
+            "id": "FargateEnv-ruby",
+            "path": "PluginStack-ruby/FargateEnv-ruby",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Batch::ComputeEnvironment",
+              "aws:cdk:cloudformation:props": {
+                "computeResources": {
+                  "type": "FARGATE",
+                  "subnets": [
+                    "subnet-04c062707fa14096f",
+                    "subnet-0a2f8448f7b06ba2e",
+                    "subnet-0588243e08389fcdc",
+                    "subnet-0063111637bf712c5",
+                    "subnet-088c5a5fb054755a0",
+                    "subnet-04e31672cf5067b3a"
+                  ],
+                  "securityGroupIds": [
+                    {
+                      "Fn::GetAtt": [
+                        "sg29196201",
+                        "GroupId"
+                      ]
+                    }
+                  ],
+                  "maxvCpus": 1
+                },
+                "type": "MANAGED"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_batch.CfnComputeEnvironment",
+              "version": "2.95.1"
+            }
+          },
+          "JobDefn": {
+            "id": "JobDefn",
+            "path": "PluginStack-ruby/JobDefn",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Batch::JobDefinition",
+              "aws:cdk:cloudformation:props": {
+                "containerProperties": {
+                  "image": "808326389482.dkr.ecr.us-east-1.amazonaws.com/ruby:latest",
+                  "jobRoleArn": {
+                    "Fn::GetAtt": [
+                      "BatchExecutionRoleruby841CC48F",
+                      "Arn"
+                    ]
+                  },
+                  "executionRoleArn": {
+                    "Fn::GetAtt": [
+                      "BatchExecutionRoleruby841CC48F",
+                      "Arn"
+                    ]
+                  },
+                  "networkConfiguration": {
+                    "assignPublicIp": "ENABLED"
+                  },
+                  "resourceRequirements": [
+                    {
+                      "type": "VCPU",
+                      "value": "0.25"
+                    },
+                    {
+                      "type": "MEMORY",
+                      "value": "512"
+                    }
+                  ]
+                },
+                "platformCapabilities": [
+                  "FARGATE"
+                ],
+                "type": "container"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_batch.CfnJobDefinition",
+              "version": "2.95.1"
+            }
+          },
+          "JobQueue-ruby": {
+            "id": "JobQueue-ruby",
+            "path": "PluginStack-ruby/JobQueue-ruby",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Batch::JobQueue",
+              "aws:cdk:cloudformation:props": {
+                "computeEnvironmentOrder": [
+                  {
+                    "computeEnvironment": {
+                      "Ref": "FargateEnvruby"
+                    },
+                    "order": 0
+                  }
+                ],
+                "priority": 0
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_batch.CfnJobQueue",
+              "version": "2.95.1"
+            }
+          },
+          "BatchLambdaExecutionRole-ruby": {
+            "id": "BatchLambdaExecutionRole-ruby",
+            "path": "PluginStack-ruby/BatchLambdaExecutionRole-ruby",
+            "children": {
+              "ImportBatchLambdaExecutionRole-ruby": {
+                "id": "ImportBatchLambdaExecutionRole-ruby",
+                "path": "PluginStack-ruby/BatchLambdaExecutionRole-ruby/ImportBatchLambdaExecutionRole-ruby",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/BatchLambdaExecutionRole-ruby/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.95.1"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "PluginStack-ruby/BatchLambdaExecutionRole-ruby/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PluginStack-ruby/BatchLambdaExecutionRole-ruby/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "batch:DescribeJobs",
+                                "batch:SubmitJob",
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            },
+                            {
+                              "Action": [
+                                "sqs:ChangeMessageVisibility",
+                                "sqs:DeleteMessage",
+                                "sqs:GetQueueAttributes",
+                                "sqs:GetQueueUrl",
+                                "sqs:ReceiveMessage"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuerubyC0D1183C",
+                                  "Arn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "BatchLambdaExecutionRolerubyDefaultPolicy90E7C378",
+                        "roles": [
+                          {
+                            "Ref": "BatchLambdaExecutionRoleruby95A3A4AE"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.95.1"
+            }
+          },
+          "SubmitBatchJob-ruby": {
+            "id": "SubmitBatchJob-ruby",
+            "path": "PluginStack-ruby/SubmitBatchJob-ruby",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "PluginStack-ruby/SubmitBatchJob-ruby/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "PluginStack-ruby/SubmitBatchJob-ruby/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.95.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "PluginStack-ruby/SubmitBatchJob-ruby/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.95.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/SubmitBatchJob-ruby/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-616362385685-us-east-1",
+                      "s3Key": "72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "JOB_QUEUE": {
+                          "Ref": "JobQueueruby"
+                        },
+                        "JOB_DEFINITION": {
+                          "Ref": "JobDefn"
+                        },
+                        "JOB_NAME": "job-ruby"
+                      }
+                    },
+                    "handler": "submit_job.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "BatchLambdaExecutionRoleruby95A3A4AE",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "python3.8"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.95.1"
+                }
+              },
+              "SqsEventSource:PluginStackrubyBatchJobQueueruby9E00F841": {
+                "id": "SqsEventSource:PluginStackrubyBatchJobQueueruby9E00F841",
+                "path": "PluginStack-ruby/SubmitBatchJob-ruby/SqsEventSource:PluginStackrubyBatchJobQueueruby9E00F841",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PluginStack-ruby/SubmitBatchJob-ruby/SqsEventSource:PluginStackrubyBatchJobQueueruby9E00F841/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
+                      "aws:cdk:cloudformation:props": {
+                        "eventSourceArn": {
+                          "Fn::GetAtt": [
+                            "BatchJobQueuerubyC0D1183C",
+                            "Arn"
+                          ]
+                        },
+                        "functionName": {
+                          "Ref": "SubmitBatchJobruby4FDB7778"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnEventSourceMapping",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.95.1"
+            }
+          },
+          "LogBucket": {
+            "id": "LogBucket",
+            "path": "PluginStack-ruby/LogBucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/LogBucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                  "version": "2.95.1"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "PluginStack-ruby/LogBucket/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PluginStack-ruby/LogBucket/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "bucket": {
+                          "Ref": "LogBucketCC3B17E8"
+                        },
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:DeleteObject",
+                                "s3:GetObject",
+                                "s3:ListBucket",
+                                "s3:PutObject",
+                                "s3:PutObjectAcl"
+                              ],
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": [
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":role/CloudWatchExecutionRole"
+                                      ]
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":root"
+                                      ]
+                                    ]
+                                  }
+                                ]
+                              },
+                              "Resource": [
+                                {
+                                  "Fn::GetAtt": [
+                                    "LogBucketCC3B17E8",
+                                    "Arn"
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "LogBucketCC3B17E8",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_s3.Bucket",
+              "version": "2.95.1"
+            }
+          },
+          "CloudWatchExecutionRole": {
+            "id": "CloudWatchExecutionRole",
+            "path": "PluginStack-ruby/CloudWatchExecutionRole",
+            "children": {
+              "ImportCloudWatchExecutionRole": {
+                "id": "ImportCloudWatchExecutionRole",
+                "path": "PluginStack-ruby/CloudWatchExecutionRole/ImportCloudWatchExecutionRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.95.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/CloudWatchExecutionRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "Allows Lambda function to get logs from CloudWatch",
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                          ]
+                        ]
+                      }
+                    ],
+                    "roleName": "CloudWatchExecutionRole"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.95.1"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "PluginStack-ruby/CloudWatchExecutionRole/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PluginStack-ruby/CloudWatchExecutionRole/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "logs:DescribeLogStreams",
+                                "logs:GetLogEvents"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    "arn:aws:logs:us-east-1:",
+                                    {
+                                      "Ref": "AWS::AccountId"
+                                    },
+                                    ":*"
+                                  ]
+                                ]
+                              }
+                            },
+                            {
+                              "Action": [
+                                "s3:DeleteObject",
+                                "s3:GetObject",
+                                "s3:ListBucket",
+                                "s3:PutObject",
+                                "s3:PutObjectAcl"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                "arn:aws:s3:::aws-weathertop-admin-log-bucket",
+                                "arn:aws:s3:::aws-weathertop-admin-log-bucket/*",
+                                {
+                                  "Fn::GetAtt": [
+                                    "LogBucketCC3B17E8",
+                                    "Arn"
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "LogBucketCC3B17E8",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "CloudWatchExecutionRoleDefaultPolicy9F1AEB60",
+                        "roles": [
+                          {
+                            "Ref": "CloudWatchExecutionRole75E8B2AB"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.95.1"
+            }
+          },
+          "BatchJobCompleteLambda": {
+            "id": "BatchJobCompleteLambda",
+            "path": "PluginStack-ruby/BatchJobCompleteLambda",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "PluginStack-ruby/BatchJobCompleteLambda/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "PluginStack-ruby/BatchJobCompleteLambda/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.95.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "PluginStack-ruby/BatchJobCompleteLambda/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.95.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.95.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/BatchJobCompleteLambda/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-616362385685-us-east-1",
+                      "s3Key": "72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "TOOL_NAME": "ruby",
+                        "LOCAL_BUCKET_NAME": {
+                          "Ref": "LogBucketCC3B17E8"
+                        },
+                        "ADMIN_BUCKET_NAME": "aws-weathertop-admin-log-bucket"
+                      }
+                    },
+                    "handler": "export_logs.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "CloudWatchExecutionRole75E8B2AB",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "python3.8",
+                    "timeout": 60
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.95.1"
+            }
+          },
+          "BatchAllEventsRule": {
+            "id": "BatchAllEventsRule",
+            "path": "PluginStack-ruby/BatchAllEventsRule",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "PluginStack-ruby/BatchAllEventsRule/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "eventPattern": {
+                      "source": [
+                        "aws.batch"
+                      ]
+                    },
+                    "state": "ENABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Fn::GetAtt": [
+                            "BatchJobCompleteLambda336A4359",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.95.1"
+                }
+              },
+              "AllowEventRulePluginStackrubyBatchJobCompleteLambdaE97A802D": {
+                "id": "AllowEventRulePluginStackrubyBatchJobCompleteLambdaE97A802D",
+                "path": "PluginStack-ruby/BatchAllEventsRule/AllowEventRulePluginStackrubyBatchJobCompleteLambdaE97A802D",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunction",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "BatchJobCompleteLambda336A4359",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "events.amazonaws.com",
+                    "sourceArn": {
+                      "Fn::GetAtt": [
+                        "BatchAllEventsRuleFB9F754A",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.95.1"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "PluginStack-ruby/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "PluginStack-ruby/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "PluginStack-ruby/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.95.1"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "PluginStack-ruby/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.95.1"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.95.1"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.95.1"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "ImageStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ImageStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ImageStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://808326389482/us-east-1",
+      "properties": {
+        "templateFile": "ImageStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-deploy-role-808326389482-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-cfn-exec-role-808326389482-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-808326389482-us-east-1/cf5f050743689aa77387f05d77220f053b499301081e5aeeb98b775b632b419d.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ImageStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-lookup-role-808326389482-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ImageStack.assets"
+      ],
+      "metadata": {
+        "/ImageStack/ruby-examples/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rubyexamplesA5A582AA"
+          }
+        ],
+        "/ImageStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ImageStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ImageStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ImageStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "version": "34.0.0",
+  "files": {
+    "72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb": {
+      "source": {
+        "path": "asset.72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "099736152523-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-099736152523-us-east-1",
+          "objectKey": "72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::099736152523:role/cdk-hnb659fds-file-publishing-role-099736152523-us-east-1"
+        }
+      }
+    },
+    "0973207a94c32d96299e919b1c7bfa180597608000f61fbfb2b586263e7389b6": {
+      "source": {
+        "path": "PluginStack-sap-abap.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "099736152523-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-099736152523-us-east-1",
+          "objectKey": "0973207a94c32d96299e919b1c7bfa180597608000f61fbfb2b586263e7389b6.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::099736152523:role/cdk-hnb659fds-file-publishing-role-099736152523-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

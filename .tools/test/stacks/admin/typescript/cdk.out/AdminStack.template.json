@@ -1,0 +1,245 @@
+{
+ "Resources": {
+  "fanouttopic6EFF7954": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "TopicName": "aws-weathertop-admin-sns-fanout-topic"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AdminStack/fanout-topic/Resource"
+   }
+  },
+  "fanouttopicPolicy0CD5CF6A": {
+   "Type": "AWS::SNS::TopicPolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "SNS:AddPermission",
+        "SNS:DeleteTopic",
+        "SNS:GetTopicAttributes",
+        "SNS:ListSubscriptionsByTopic",
+        "SNS:Publish",
+        "SNS:RemovePermission",
+        "SNS:SetTopicAttributes",
+        "SNS:Subscribe"
+       ],
+       "Condition": {
+        "StringEquals": {
+         "AWS:SourceOwner": "808326389482"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Ref": "fanouttopic6EFF7954"
+       },
+       "Sid": "0"
+      },
+      {
+       "Action": "SNS:Subscribe",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": [
+         "arn:aws:iam::050288538048:root",
+         "arn:aws:iam::099736152523:root",
+         "arn:aws:iam::234521034040:root",
+         "arn:aws:iam::441997275833:root",
+         "arn:aws:iam::471951630130:root",
+         "arn:aws:iam::616362385685:root",
+         "arn:aws:iam::637397754108:root",
+         "arn:aws:iam::664857444588:root",
+         "arn:aws:iam::667348412466:root",
+         "arn:aws:iam::733931915187:root",
+         "arn:aws:iam::770244195820:root",
+         "arn:aws:iam::875008041426:root"
+        ]
+       },
+       "Resource": {
+        "Ref": "fanouttopic6EFF7954"
+       },
+       "Sid": "1"
+      },
+      {
+       "Action": "SNS:Publish",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": [
+         "arn:aws:iam::050288538048:root",
+         "arn:aws:iam::099736152523:root",
+         "arn:aws:iam::234521034040:root",
+         "arn:aws:iam::441997275833:root",
+         "arn:aws:iam::471951630130:root",
+         "arn:aws:iam::616362385685:root",
+         "arn:aws:iam::637397754108:root",
+         "arn:aws:iam::664857444588:root",
+         "arn:aws:iam::667348412466:root",
+         "arn:aws:iam::733931915187:root",
+         "arn:aws:iam::770244195820:root",
+         "arn:aws:iam::875008041426:root"
+        ],
+        "Service": "events.amazonaws.com"
+       },
+       "Resource": {
+        "Ref": "fanouttopic6EFF7954"
+       },
+       "Sid": "2"
+      },
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       },
+       "Resource": {
+        "Ref": "fanouttopic6EFF7954"
+       },
+       "Sid": "3"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Topics": [
+     {
+      "Ref": "fanouttopic6EFF7954"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AdminStack/fanout-topic/Policy/Resource"
+   }
+  },
+  "awsweathertopadminlogbucket8DE9D8E4": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketName": "aws-weathertop-admin-log-bucket",
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "AdminStack/aws-weathertop-admin-log-bucket/Resource"
+   }
+  },
+  "awsweathertopadminlogbucketPolicyEC70ED5D": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "awsweathertopadminlogbucket8DE9D8E4"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:DeleteObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:PutObjectAcl"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::770244195820:role/CloudWatchExecutionRole"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "awsweathertopadminlogbucket8DE9D8E4",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "awsweathertopadminlogbucket8DE9D8E4",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AdminStack/aws-weathertop-admin-log-bucket/Policy/Resource"
+   }
+  },
+  "triggerruleC9B6D4A3": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "ScheduleExpression": "cron(0 * * * ? *)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Ref": "fanouttopic6EFF7954"
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AdminStack/trigger-rule/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02NTQ7CIBCFz9I9HSvGhVu9gKnuTaVjMgXBdKDGEO5uKUbdzPd+MnkSdltYV92Ta9Xr2tAV4sl3Sos5ukS2DPHsHqTE4WaLWO7RGVKvb1hsEryBuA9Ko8/VRxX8Pv59Ejih9fNKGwzmNjOlRSG7MCpMwroeYeDVJBuQ0FQDE9VjsJ7uCG3hG1BH83/KAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AdminStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

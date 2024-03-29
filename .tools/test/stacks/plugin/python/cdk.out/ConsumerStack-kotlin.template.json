@@ -1,0 +1,841 @@
+{
+ "Resources": {
+  "BatchJobQueuekotlin45B669CA": {
+   "Type": "AWS::SQS::Queue",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchJobQueue-kotlin/Resource"
+   }
+  },
+  "BatchJobQueuekotlinPolicy9DF43E3F": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuekotlin45B669CA",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "ArnLike": {
+         "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": [
+         "arn:aws:iam::808326389482:root",
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:iam::",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":root"
+           ]
+          ]
+         }
+        ]
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuekotlin45B669CA",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "BatchJobQueuekotlin45B669CA"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchJobQueue-kotlin/Policy/Resource"
+   }
+  },
+  "BatchJobQueuekotlinConsumerStackkotlinExternalSNSTopic8E620D40D7097B96": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "BatchJobQueuekotlin45B669CA",
+      "Arn"
+     ]
+    },
+    "Protocol": "sqs",
+    "Region": "us-east-1",
+    "TopicArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+   },
+   "DependsOn": [
+    "BatchJobQueuekotlinPolicy9DF43E3F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchJobQueue-kotlin/ConsumerStackkotlinExternalSNSTopic8E620D40/Resource"
+   }
+  },
+  "SNSTopicRolekotlinAB387583": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows the SNS topic to send messages to the SQS queue in this account",
+    "RoleName": "SNSTopicRole-kotlin"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/SNSTopicRole-kotlin/Resource"
+   }
+  },
+  "SNSTopicRolekotlinDefaultPolicy40D4F62B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+        }
+       },
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuekotlin45B669CA",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SNSTopicRolekotlinDefaultPolicy40D4F62B",
+    "Roles": [
+     {
+      "Ref": "SNSTopicRolekotlinAB387583"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/SNSTopicRole-kotlin/DefaultPolicy/Resource"
+   }
+  },
+  "BatchExecutionRolekotlin813671B6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AdministratorAccess"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+       ]
+      ]
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams"
+         ],
+         "Effect": "Allow",
+         "Resource": "arn:aws:logs:*:*:*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "BatchLoggingPolicy"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchExecutionRole-kotlin/Resource"
+   }
+  },
+  "FargateEnvkotlinSecurityGroup5E1A49FE": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "ConsumerStack-kotlin/FargateEnv-kotlin/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": "vpc-098a56f71b4485384"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/FargateEnv-kotlin/SecurityGroup/Resource"
+   }
+  },
+  "FargateEnvkotlinD9607E2C": {
+   "Type": "AWS::Batch::ComputeEnvironment",
+   "Properties": {
+    "ComputeResources": {
+     "MaxvCpus": 256,
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "FargateEnvkotlinSecurityGroup5E1A49FE",
+        "GroupId"
+       ]
+      }
+     ],
+     "Subnets": [
+      "subnet-0953a7cf7307ac0d3",
+      "subnet-0133d9f167e609ca9",
+      "subnet-090420b785f4a77eb",
+      "subnet-0bef1a967454fbf4d",
+      "subnet-028dd5c6c29304b8b",
+      "subnet-080238325900a3756"
+     ],
+     "Type": "FARGATE",
+     "UpdateToLatestImageVersion": true
+    },
+    "ReplaceComputeEnvironment": false,
+    "State": "ENABLED",
+    "Type": "managed",
+    "UpdatePolicy": {}
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/FargateEnv-kotlin/Resource"
+   }
+  },
+  "JobDefinitionkotlinC3B574EA": {
+   "Type": "AWS::Batch::JobDefinition",
+   "Properties": {
+    "ContainerProperties": {
+     "Environment": [],
+     "ExecutionRoleArn": {
+      "Fn::GetAtt": [
+       "BatchExecutionRolekotlin813671B6",
+       "Arn"
+      ]
+     },
+     "FargatePlatformConfiguration": {},
+     "Image": "public.ecr.aws/b4v4v1s0/kotlin:latest",
+     "JobRoleArn": {
+      "Fn::GetAtt": [
+       "BatchExecutionRolekotlin813671B6",
+       "Arn"
+      ]
+     },
+     "NetworkConfiguration": {
+      "AssignPublicIp": "ENABLED"
+     },
+     "ReadonlyRootFilesystem": false,
+     "ResourceRequirements": [
+      {
+       "Type": "MEMORY",
+       "Value": "2048"
+      },
+      {
+       "Type": "VCPU",
+       "Value": "1"
+      }
+     ]
+    },
+    "PlatformCapabilities": [
+     "FARGATE"
+    ],
+    "RetryStrategy": {},
+    "Timeout": {
+     "AttemptDurationSeconds": 30000
+    },
+    "Type": "container"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/JobDefinition-kotlin/Resource"
+   }
+  },
+  "JobQueuekotlinDAD28AD4": {
+   "Type": "AWS::Batch::JobQueue",
+   "Properties": {
+    "ComputeEnvironmentOrder": [
+     {
+      "ComputeEnvironment": {
+       "Fn::GetAtt": [
+        "FargateEnvkotlinD9607E2C",
+        "ComputeEnvironmentArn"
+       ]
+      },
+      "Order": 1
+     }
+    ],
+    "Priority": 1,
+    "State": "ENABLED"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/JobQueue-kotlin/Resource"
+   }
+  },
+  "BatchLambdaExecutionRolekotlin142E46F0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows Lambda function to submit jobs to Batch",
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "RoleName": "BatchLambdaExecutionRole-kotlin"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchLambdaExecutionRole-kotlin/Resource"
+   }
+  },
+  "BatchLambdaExecutionRolekotlinDefaultPolicyE3F79DB0": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "batch:*",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuekotlin45B669CA",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sqs:ReceiveMessage",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuekotlin45B669CA",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BatchLambdaExecutionRolekotlinDefaultPolicyE3F79DB0",
+    "Roles": [
+     {
+      "Ref": "BatchLambdaExecutionRolekotlin142E46F0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchLambdaExecutionRole-kotlin/DefaultPolicy/Resource"
+   }
+  },
+  "SubmitBatchJobkotlinA4B69636": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-471951630130-us-east-1",
+     "S3Key": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "LANGUAGE_NAME": "kotlin",
+      "JOB_QUEUE": {
+       "Fn::GetAtt": [
+        "JobQueuekotlinDAD28AD4",
+        "JobQueueArn"
+       ]
+      },
+      "JOB_DEFINITION": {
+       "Ref": "JobDefinitionkotlinC3B574EA"
+      },
+      "JOB_NAME": "job-kotlin"
+     }
+    },
+    "Handler": "submit_job.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "BatchLambdaExecutionRolekotlin142E46F0",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.8"
+   },
+   "DependsOn": [
+    "BatchLambdaExecutionRolekotlinDefaultPolicyE3F79DB0",
+    "BatchLambdaExecutionRolekotlin142E46F0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/SubmitBatchJob-kotlin/Resource",
+    "aws:asset:path": "asset.09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SubmitBatchJobkotlinSqsEventSourceConsumerStackkotlinBatchJobQueuekotlin585D3C1DA21B0997": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "BatchJobQueuekotlin45B669CA",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "SubmitBatchJobkotlinA4B69636"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/SubmitBatchJob-kotlin/SqsEventSource:ConsumerStackkotlinBatchJobQueuekotlin585D3C1D/Resource"
+   }
+  },
+  "LogBucketCC3B17E8": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/LogBucket/Resource"
+   }
+  },
+  "LogBucketPolicy900DBE48": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "LogBucketCC3B17E8"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:GetObject"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": [
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:iam::",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":role/LogsLambdaExecutionRole"
+           ]
+          ]
+         },
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:iam::",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":root"
+           ]
+          ]
+         }
+        ]
+       },
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "LogBucketCC3B17E8",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "LogBucketCC3B17E8",
+          "Arn"
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/LogBucket/Policy/Resource"
+   }
+  },
+  "LogsLambdaExecutionRole104B6366": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows Lambda function to get logs from CloudWatch",
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "RoleName": "LogsLambdaExecutionRole"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/LogsLambdaExecutionRole/Resource"
+   }
+  },
+  "LogsLambdaExecutionRoleDefaultPolicy296B17F5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:GetLogEvents",
+        "logs:DescribeLogStreams"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:logs:us-east-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::GetAtt": [
+             "LogBucketCC3B17E8",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::GetAtt": [
+             "LogBucketCC3B17E8",
+             "Arn"
+            ]
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:s3:::aws-weathertop-central-log-bucket/*",
+        "arn:aws:s3:::aws-weathertop-central-log-bucket"
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogsLambdaExecutionRoleDefaultPolicy296B17F5",
+    "Roles": [
+     {
+      "Ref": "LogsLambdaExecutionRole104B6366"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/LogsLambdaExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "BatchJobCompleteLambda336A4359": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-471951630130-us-east-1",
+     "S3Key": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TOOL_NAME": "kotlin",
+      "LOCAL_BUCKET_NAME": {
+       "Ref": "LogBucketCC3B17E8"
+      },
+      "ADMIN_BUCKET_NAME": "aws-weathertop-central-log-bucket"
+     }
+    },
+    "Handler": "export_logs.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LogsLambdaExecutionRole104B6366",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.8"
+   },
+   "DependsOn": [
+    "LogsLambdaExecutionRoleDefaultPolicy296B17F5",
+    "LogsLambdaExecutionRole104B6366"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchJobCompleteLambda/Resource",
+    "aws:asset:path": "asset.09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BatchAllEventsRuleFB9F754A": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "EventPattern": {
+     "source": [
+      "aws.batch"
+     ]
+    },
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "BatchJobCompleteLambda336A4359",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchAllEventsRule/Resource"
+   }
+  },
+  "BatchAllEventsRuleAllowEventRuleConsumerStackkotlinBatchJobCompleteLambda0436B07B33A3B1C1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BatchJobCompleteLambda336A4359",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "BatchAllEventsRuleFB9F754A",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/BatchAllEventsRule/AllowEventRuleConsumerStackkotlinBatchJobCompleteLambda0436B07B"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21Ry27CMBD8Fu6OeV04tlCoVKkSDb0jxyywkNiuH1TI8r/XcR6kEhfP7swmOx7P6GJB/WTEfk3GD9esxIL6nWX8SiK190YY6r+lQr5kBsjOFYZrVBalIKujGPaBmJ84/OXAQa01RTq3skR+78mmDQRZRX0uyzSe8DHYzQCfRUPAnUZ7f9fSqbR3SARSMMvP1EdhJSvlLKzFDbUUFQhbj3/I4g2OKLDzHYnkJJCSVcWBUb9xgndqX69v8Qc76TSHT6YUilMtP2e3oCs0pglivmfGgDX0tYbYU790/Ao2pdiU9Udt1cDj8sM+RlDvi8nmrk0qYggkB5M8kLQjvtmpddIJgUwyVqozo5PRS/vA4xpTXK3kN0yfmIUnwa256UVhGQrQgxSj+j/WPtNAtnd7lmI8p9MpnY8uBjHTTlisgOYN/gF6x31WeAIAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-kotlin/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

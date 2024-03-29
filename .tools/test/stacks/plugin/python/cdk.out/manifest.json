@@ -1,0 +1,190 @@
+{
+  "version": "32.0.0",
+  "artifacts": {
+    "ConsumerStack-javav2.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ConsumerStack-javav2.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ConsumerStack-javav2": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://667348412466/us-east-1",
+      "properties": {
+        "templateFile": "ConsumerStack-javav2.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::667348412466:role/cdk-hnb659fds-deploy-role-667348412466-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::667348412466:role/cdk-hnb659fds-cfn-exec-role-667348412466-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-667348412466-us-east-1/97a48e1b9a6a905087b1406d68848ab621fd12ac2248a07e95080bb57b75d144.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ConsumerStack-javav2.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::667348412466:role/cdk-hnb659fds-lookup-role-667348412466-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ConsumerStack-javav2.assets"
+      ],
+      "metadata": {
+        "/ConsumerStack-javav2/BatchJobQueue-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobQueuejavav2EC563343"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchJobQueue-javav2/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobQueuejavav2Policy0426AB7B"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchJobQueue-javav2/ConsumerStackjavav2ExternalSNSTopicF6765DBD/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobQueuejavav2ConsumerStackjavav2ExternalSNSTopicF6765DBDB83F0855"
+          }
+        ],
+        "/ConsumerStack-javav2/SNSTopicRole-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SNSTopicRolejavav2C6A4CC09"
+          }
+        ],
+        "/ConsumerStack-javav2/SNSTopicRole-javav2/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SNSTopicRolejavav2DefaultPolicy9508DABD"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchExecutionRole-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchExecutionRolejavav2745AFB37"
+          }
+        ],
+        "/ConsumerStack-javav2/FargateEnv-javav2/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FargateEnvjavav2SecurityGroupBC367DC3"
+          }
+        ],
+        "/ConsumerStack-javav2/FargateEnv-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FargateEnvjavav25F484E05"
+          }
+        ],
+        "/ConsumerStack-javav2/JobDefinition-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JobDefinitionjavav2F391C900"
+          }
+        ],
+        "/ConsumerStack-javav2/JobQueue-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JobQueuejavav2923E863E"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchLambdaExecutionRole-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchLambdaExecutionRolejavav27A2AF3A8"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchLambdaExecutionRole-javav2/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchLambdaExecutionRolejavav2DefaultPolicy2997E507"
+          }
+        ],
+        "/ConsumerStack-javav2/SubmitBatchJob-javav2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitBatchJobjavav2409C4036"
+          }
+        ],
+        "/ConsumerStack-javav2/SubmitBatchJob-javav2/SqsEventSource:ConsumerStackjavav2BatchJobQueuejavav2CB765CFF/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitBatchJobjavav2SqsEventSourceConsumerStackjavav2BatchJobQueuejavav2CB765CFFC7094D04"
+          }
+        ],
+        "/ConsumerStack-javav2/LogBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogBucketCC3B17E8"
+          }
+        ],
+        "/ConsumerStack-javav2/LogBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogBucketPolicy900DBE48"
+          }
+        ],
+        "/ConsumerStack-javav2/LogsLambdaExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogsLambdaExecutionRole104B6366"
+          }
+        ],
+        "/ConsumerStack-javav2/LogsLambdaExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogsLambdaExecutionRoleDefaultPolicy296B17F5"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchJobCompleteLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobCompleteLambda336A4359"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchAllEventsRule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchAllEventsRuleFB9F754A"
+          }
+        ],
+        "/ConsumerStack-javav2/BatchAllEventsRule/AllowEventRuleConsumerStackjavav2BatchJobCompleteLambda8F725370": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchAllEventsRuleAllowEventRuleConsumerStackjavav2BatchJobCompleteLambda8F7253703BFCAC76"
+          }
+        ],
+        "/ConsumerStack-javav2/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ConsumerStack-javav2/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ConsumerStack-javav2/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ConsumerStack-javav2"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

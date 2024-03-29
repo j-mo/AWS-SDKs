@@ -1,0 +1,124 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "ImageStack": {
+        "id": "ImageStack",
+        "path": "ImageStack",
+        "children": {
+          "ruby-examples": {
+            "id": "ruby-examples",
+            "path": "ImageStack/ruby-examples",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ImageStack/ruby-examples/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECR::Repository",
+                  "aws:cdk:cloudformation:props": {
+                    "imageScanningConfiguration": {
+                      "scanOnPush": true
+                    },
+                    "repositoryName": "ruby",
+                    "repositoryPolicyText": {
+                      "Statement": [
+                        {
+                          "Action": [
+                            "ecr:BatchCheckLayerAvailability",
+                            "ecr:BatchGetImage",
+                            "ecr:GetDownloadUrlForLayer"
+                          ],
+                          "Effect": "Allow",
+                          "Principal": {
+                            "AWS": "arn:aws:iam::616362385685:role/BatchExecutionRole-ruby"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecr.CfnRepository",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecr.Repository",
+              "version": "2.95.1"
+            }
+          },
+          "MutableRoleBatchExecutionRole-ruby": {
+            "id": "MutableRoleBatchExecutionRole-ruby",
+            "path": "ImageStack/MutableRoleBatchExecutionRole-ruby",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.95.1"
+            }
+          },
+          "BatchExecutionRole-ruby": {
+            "id": "BatchExecutionRole-ruby",
+            "path": "ImageStack/BatchExecutionRole-ruby",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.95.1"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "ImageStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "ImageStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.95.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "ImageStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.95.1"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "ImageStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.95.1"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.95.1"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.95.1"
+    }
+  }
+}

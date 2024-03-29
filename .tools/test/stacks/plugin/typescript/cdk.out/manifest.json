@@ -1,0 +1,178 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "PluginStack-ruby.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PluginStack-ruby.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PluginStack-ruby": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://616362385685/us-east-1",
+      "properties": {
+        "templateFile": "PluginStack-ruby.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::616362385685:role/cdk-hnb659fds-deploy-role-616362385685-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::616362385685:role/cdk-hnb659fds-cfn-exec-role-616362385685-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-616362385685-us-east-1/a4ccda318fe8c61e1181df44676525a6cd4343a7a58e1fde6ad90acaad6c5498.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PluginStack-ruby.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::616362385685:role/cdk-hnb659fds-lookup-role-616362385685-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PluginStack-ruby.assets"
+      ],
+      "metadata": {
+        "/PluginStack-ruby/BatchJobQueue-ruby/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobQueuerubyC0D1183C"
+          }
+        ],
+        "/PluginStack-ruby/BatchJobQueue-ruby/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobQueuerubyPolicy3BE41C9E"
+          }
+        ],
+        "/PluginStack-ruby/BatchJobQueue-ruby/PluginStackrubyExternalSNSTopicC266389C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobQueuerubyPluginStackrubyExternalSNSTopicC266389C5CF47381"
+          }
+        ],
+        "/PluginStack-ruby/BatchExecutionRole-ruby/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchExecutionRoleruby841CC48F"
+          }
+        ],
+        "/PluginStack-ruby/sg/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "sg29196201"
+          }
+        ],
+        "/PluginStack-ruby/FargateEnv-ruby": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FargateEnvruby"
+          }
+        ],
+        "/PluginStack-ruby/JobDefn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JobDefn"
+          }
+        ],
+        "/PluginStack-ruby/JobQueue-ruby": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JobQueueruby"
+          }
+        ],
+        "/PluginStack-ruby/BatchLambdaExecutionRole-ruby/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchLambdaExecutionRoleruby95A3A4AE"
+          }
+        ],
+        "/PluginStack-ruby/BatchLambdaExecutionRole-ruby/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchLambdaExecutionRolerubyDefaultPolicy90E7C378"
+          }
+        ],
+        "/PluginStack-ruby/SubmitBatchJob-ruby/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitBatchJobruby4FDB7778"
+          }
+        ],
+        "/PluginStack-ruby/SubmitBatchJob-ruby/SqsEventSource:PluginStackrubyBatchJobQueueruby9E00F841/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitBatchJobrubySqsEventSourcePluginStackrubyBatchJobQueueruby9E00F84134161E03"
+          }
+        ],
+        "/PluginStack-ruby/LogBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogBucketCC3B17E8"
+          }
+        ],
+        "/PluginStack-ruby/LogBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogBucketPolicy900DBE48"
+          }
+        ],
+        "/PluginStack-ruby/CloudWatchExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CloudWatchExecutionRole75E8B2AB"
+          }
+        ],
+        "/PluginStack-ruby/CloudWatchExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CloudWatchExecutionRoleDefaultPolicy9F1AEB60"
+          }
+        ],
+        "/PluginStack-ruby/BatchJobCompleteLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchJobCompleteLambda336A4359"
+          }
+        ],
+        "/PluginStack-ruby/BatchAllEventsRule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchAllEventsRuleFB9F754A"
+          }
+        ],
+        "/PluginStack-ruby/BatchAllEventsRule/AllowEventRulePluginStackrubyBatchJobCompleteLambdaE97A802D": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BatchAllEventsRuleAllowEventRulePluginStackrubyBatchJobCompleteLambdaE97A802D50CBF442"
+          }
+        ],
+        "/PluginStack-ruby/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PluginStack-ruby/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PluginStack-ruby/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PluginStack-ruby"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

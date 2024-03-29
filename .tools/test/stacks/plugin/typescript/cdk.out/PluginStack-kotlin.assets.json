@@ -1,0 +1,34 @@
+{
+  "version": "34.0.0",
+  "files": {
+    "72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb": {
+      "source": {
+        "path": "asset.72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "471951630130-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-471951630130-us-east-1",
+          "objectKey": "72cadbd3bcad159a56c9e56b72733b0e268d15a6255be5e90ca9a5b44d8474fb.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::471951630130:role/cdk-hnb659fds-file-publishing-role-471951630130-us-east-1"
+        }
+      }
+    },
+    "335d928ed1de0602025943af0de758c0d23df96c1c4834f019f1a53b8166f645": {
+      "source": {
+        "path": "PluginStack-kotlin.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "471951630130-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-471951630130-us-east-1",
+          "objectKey": "335d928ed1de0602025943af0de758c0d23df96c1c4834f019f1a53b8166f645.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::471951630130:role/cdk-hnb659fds-file-publishing-role-471951630130-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

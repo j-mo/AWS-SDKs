@@ -1,0 +1,841 @@
+{
+ "Resources": {
+  "BatchJobQueuephp41452200": {
+   "Type": "AWS::SQS::Queue",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchJobQueue-php/Resource"
+   }
+  },
+  "BatchJobQueuephpPolicyC507757D": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuephp41452200",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "ArnLike": {
+         "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": [
+         "arn:aws:iam::808326389482:root",
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:iam::",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":root"
+           ]
+          ]
+         }
+        ]
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuephp41452200",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "BatchJobQueuephp41452200"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchJobQueue-php/Policy/Resource"
+   }
+  },
+  "BatchJobQueuephpConsumerStackphpExternalSNSTopicC9942B97B38E0D44": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "BatchJobQueuephp41452200",
+      "Arn"
+     ]
+    },
+    "Protocol": "sqs",
+    "Region": "us-east-1",
+    "TopicArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+   },
+   "DependsOn": [
+    "BatchJobQueuephpPolicyC507757D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchJobQueue-php/ConsumerStackphpExternalSNSTopicC9942B97/Resource"
+   }
+  },
+  "SNSTopicRolephp0F5C5CC3": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows the SNS topic to send messages to the SQS queue in this account",
+    "RoleName": "SNSTopicRole-php"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/SNSTopicRole-php/Resource"
+   }
+  },
+  "SNSTopicRolephpDefaultPolicyEE8A4AA5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+        }
+       },
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuephp41452200",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SNSTopicRolephpDefaultPolicyEE8A4AA5",
+    "Roles": [
+     {
+      "Ref": "SNSTopicRolephp0F5C5CC3"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/SNSTopicRole-php/DefaultPolicy/Resource"
+   }
+  },
+  "BatchExecutionRolephp6614D2E9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AdministratorAccess"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+       ]
+      ]
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams"
+         ],
+         "Effect": "Allow",
+         "Resource": "arn:aws:logs:*:*:*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "BatchLoggingPolicy"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchExecutionRole-php/Resource"
+   }
+  },
+  "FargateEnvphpSecurityGroupE199FE68": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "ConsumerStack-php/FargateEnv-php/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": "vpc-0f0f33dfa113d3698"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/FargateEnv-php/SecurityGroup/Resource"
+   }
+  },
+  "FargateEnvphp44C36E48": {
+   "Type": "AWS::Batch::ComputeEnvironment",
+   "Properties": {
+    "ComputeResources": {
+     "MaxvCpus": 256,
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "FargateEnvphpSecurityGroupE199FE68",
+        "GroupId"
+       ]
+      }
+     ],
+     "Subnets": [
+      "subnet-0a3e72d40bffae28d",
+      "subnet-0370623c688a201fc",
+      "subnet-0d3d123b2d9bedb72",
+      "subnet-012cbbdd769e56b6a",
+      "subnet-06ee5f5198462e294",
+      "subnet-004bbd4a5d57dfb4c"
+     ],
+     "Type": "FARGATE",
+     "UpdateToLatestImageVersion": true
+    },
+    "ReplaceComputeEnvironment": false,
+    "State": "ENABLED",
+    "Type": "managed",
+    "UpdatePolicy": {}
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/FargateEnv-php/Resource"
+   }
+  },
+  "JobDefinitionphp28AE16A7": {
+   "Type": "AWS::Batch::JobDefinition",
+   "Properties": {
+    "ContainerProperties": {
+     "Environment": [],
+     "ExecutionRoleArn": {
+      "Fn::GetAtt": [
+       "BatchExecutionRolephp6614D2E9",
+       "Arn"
+      ]
+     },
+     "FargatePlatformConfiguration": {},
+     "Image": "public.ecr.aws/b4v4v1s0/php:latest",
+     "JobRoleArn": {
+      "Fn::GetAtt": [
+       "BatchExecutionRolephp6614D2E9",
+       "Arn"
+      ]
+     },
+     "NetworkConfiguration": {
+      "AssignPublicIp": "ENABLED"
+     },
+     "ReadonlyRootFilesystem": false,
+     "ResourceRequirements": [
+      {
+       "Type": "MEMORY",
+       "Value": "2048"
+      },
+      {
+       "Type": "VCPU",
+       "Value": "1"
+      }
+     ]
+    },
+    "PlatformCapabilities": [
+     "FARGATE"
+    ],
+    "RetryStrategy": {},
+    "Timeout": {
+     "AttemptDurationSeconds": 30000
+    },
+    "Type": "container"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/JobDefinition-php/Resource"
+   }
+  },
+  "JobQueuephp80AB96CE": {
+   "Type": "AWS::Batch::JobQueue",
+   "Properties": {
+    "ComputeEnvironmentOrder": [
+     {
+      "ComputeEnvironment": {
+       "Fn::GetAtt": [
+        "FargateEnvphp44C36E48",
+        "ComputeEnvironmentArn"
+       ]
+      },
+      "Order": 1
+     }
+    ],
+    "Priority": 1,
+    "State": "ENABLED"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/JobQueue-php/Resource"
+   }
+  },
+  "BatchLambdaExecutionRolephp4780CDB0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows Lambda function to submit jobs to Batch",
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "RoleName": "BatchLambdaExecutionRole-php"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchLambdaExecutionRole-php/Resource"
+   }
+  },
+  "BatchLambdaExecutionRolephpDefaultPolicyB083F4A3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "batch:*",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuephp41452200",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sqs:ReceiveMessage",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BatchJobQueuephp41452200",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BatchLambdaExecutionRolephpDefaultPolicyB083F4A3",
+    "Roles": [
+     {
+      "Ref": "BatchLambdaExecutionRolephp4780CDB0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchLambdaExecutionRole-php/DefaultPolicy/Resource"
+   }
+  },
+  "SubmitBatchJobphp988380A4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-733931915187-us-east-1",
+     "S3Key": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "LANGUAGE_NAME": "php",
+      "JOB_QUEUE": {
+       "Fn::GetAtt": [
+        "JobQueuephp80AB96CE",
+        "JobQueueArn"
+       ]
+      },
+      "JOB_DEFINITION": {
+       "Ref": "JobDefinitionphp28AE16A7"
+      },
+      "JOB_NAME": "job-php"
+     }
+    },
+    "Handler": "submit_job.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "BatchLambdaExecutionRolephp4780CDB0",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.8"
+   },
+   "DependsOn": [
+    "BatchLambdaExecutionRolephpDefaultPolicyB083F4A3",
+    "BatchLambdaExecutionRolephp4780CDB0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/SubmitBatchJob-php/Resource",
+    "aws:asset:path": "asset.09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SubmitBatchJobphpSqsEventSourceConsumerStackphpBatchJobQueuephpF01D42A3579EB2D0": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "BatchJobQueuephp41452200",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "SubmitBatchJobphp988380A4"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/SubmitBatchJob-php/SqsEventSource:ConsumerStackphpBatchJobQueuephpF01D42A3/Resource"
+   }
+  },
+  "LogBucketCC3B17E8": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/LogBucket/Resource"
+   }
+  },
+  "LogBucketPolicy900DBE48": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "LogBucketCC3B17E8"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:GetObject"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": [
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:iam::",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":role/LogsLambdaExecutionRole"
+           ]
+          ]
+         },
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:iam::",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":root"
+           ]
+          ]
+         }
+        ]
+       },
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "LogBucketCC3B17E8",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "LogBucketCC3B17E8",
+          "Arn"
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/LogBucket/Policy/Resource"
+   }
+  },
+  "LogsLambdaExecutionRole104B6366": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Allows Lambda function to get logs from CloudWatch",
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "RoleName": "LogsLambdaExecutionRole"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/LogsLambdaExecutionRole/Resource"
+   }
+  },
+  "LogsLambdaExecutionRoleDefaultPolicy296B17F5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:GetLogEvents",
+        "logs:DescribeLogStreams"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:logs:us-east-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::GetAtt": [
+             "LogBucketCC3B17E8",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::GetAtt": [
+             "LogBucketCC3B17E8",
+             "Arn"
+            ]
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:s3:::aws-weathertop-central-log-bucket/*",
+        "arn:aws:s3:::aws-weathertop-central-log-bucket"
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogsLambdaExecutionRoleDefaultPolicy296B17F5",
+    "Roles": [
+     {
+      "Ref": "LogsLambdaExecutionRole104B6366"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/LogsLambdaExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "BatchJobCompleteLambda336A4359": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-733931915187-us-east-1",
+     "S3Key": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TOOL_NAME": "php",
+      "LOCAL_BUCKET_NAME": {
+       "Ref": "LogBucketCC3B17E8"
+      },
+      "ADMIN_BUCKET_NAME": "aws-weathertop-central-log-bucket"
+     }
+    },
+    "Handler": "export_logs.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LogsLambdaExecutionRole104B6366",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.8"
+   },
+   "DependsOn": [
+    "LogsLambdaExecutionRoleDefaultPolicy296B17F5",
+    "LogsLambdaExecutionRole104B6366"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchJobCompleteLambda/Resource",
+    "aws:asset:path": "asset.09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BatchAllEventsRuleFB9F754A": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "EventPattern": {
+     "source": [
+      "aws.batch"
+     ]
+    },
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "BatchJobCompleteLambda336A4359",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchAllEventsRule/Resource"
+   }
+  },
+  "BatchAllEventsRuleAllowEventRuleConsumerStackphpBatchJobCompleteLambda6B6B93ABEC751A72": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BatchJobCompleteLambda336A4359",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "BatchAllEventsRuleFB9F754A",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/BatchAllEventsRule/AllowEventRuleConsumerStackphpBatchJobCompleteLambda6B6B93AB"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21Ry27CMBD8Fu6OeV04tlCoVKkSDb0jxyywkNiuH1TI8r/XcR6kEhfP7swmOx7P6GJB/WTEfk3GD9esxIL6nWX8SiK190YY6r+lQr5kBsjOFYZrVBalIKujGPaBmJ84/OXAQa01RTq3skR+78mmDQRZRX0uyzSe8DHYzQCfRUPAnUZ7f9fSqbR3SARSMMvP1EdhJSvlLKzFDbUUFQhbj3/I4g2OKLDzHYnkJJCSVcWBUb9xgndqX69v8Qc76TSHT6YUilMtP2e3oCs0pglivmfGgDX0tYbYU790/Ao2pdiU9Udt1cDj8sM+RlDvi8nmrk0qYggkB5M8kLQjvtmpddIJgUwyVqozo5PRS/vA4xpTXK3kN0yfmIUnwa256UVhGQrQgxSj+j/WPtNAtnd7lmI8p9MpnY8uBjHTTlisgOYN/gF6x31WeAIAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-php/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

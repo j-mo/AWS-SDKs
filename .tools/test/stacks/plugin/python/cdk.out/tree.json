@@ -1,0 +1,1302 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "ConsumerStack-javav2": {
+        "id": "ConsumerStack-javav2",
+        "path": "ConsumerStack-javav2",
+        "children": {
+          "ExternalSNSTopic": {
+            "id": "ExternalSNSTopic",
+            "path": "ConsumerStack-javav2/ExternalSNSTopic",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sns.TopicBase",
+              "version": "2.88.0"
+            }
+          },
+          "BatchJobQueue-javav2": {
+            "id": "BatchJobQueue-javav2",
+            "path": "ConsumerStack-javav2/BatchJobQueue-javav2",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/BatchJobQueue-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {}
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.88.0"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "ConsumerStack-javav2/BatchJobQueue-javav2/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/BatchJobQueue-javav2/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SQS::QueuePolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sqs:SendMessage",
+                              "Condition": {
+                                "ArnEquals": {
+                                  "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "sns.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuejavav2EC563343",
+                                  "Arn"
+                                ]
+                              }
+                            },
+                            {
+                              "Action": "sqs:*",
+                              "Condition": {
+                                "ArnLike": {
+                                  "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": [
+                                  "arn:aws:iam::808326389482:root",
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":root"
+                                      ]
+                                    ]
+                                  }
+                                ]
+                              },
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuejavav2EC563343",
+                                  "Arn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "queues": [
+                          {
+                            "Ref": "BatchJobQueuejavav2EC563343"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sqs.CfnQueuePolicy",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.QueuePolicy",
+                  "version": "2.88.0"
+                }
+              },
+              "ConsumerStackjavav2ExternalSNSTopicF6765DBD": {
+                "id": "ConsumerStackjavav2ExternalSNSTopicF6765DBD",
+                "path": "ConsumerStack-javav2/BatchJobQueue-javav2/ConsumerStackjavav2ExternalSNSTopicF6765DBD",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/BatchJobQueue-javav2/ConsumerStackjavav2ExternalSNSTopicF6765DBD/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SNS::Subscription",
+                      "aws:cdk:cloudformation:props": {
+                        "endpoint": {
+                          "Fn::GetAtt": [
+                            "BatchJobQueuejavav2EC563343",
+                            "Arn"
+                          ]
+                        },
+                        "protocol": "sqs",
+                        "region": "us-east-1",
+                        "topicArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sns.CfnSubscription",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.Subscription",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.88.0"
+            }
+          },
+          "SNSTopicRole-javav2": {
+            "id": "SNSTopicRole-javav2",
+            "path": "ConsumerStack-javav2/SNSTopicRole-javav2",
+            "children": {
+              "ImportSNSTopicRole-javav2": {
+                "id": "ImportSNSTopicRole-javav2",
+                "path": "ConsumerStack-javav2/SNSTopicRole-javav2/ImportSNSTopicRole-javav2",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/SNSTopicRole-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "sns.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "Allows the SNS topic to send messages to the SQS queue in this account",
+                    "roleName": "SNSTopicRole-javav2"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.88.0"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "ConsumerStack-javav2/SNSTopicRole-javav2/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/SNSTopicRole-javav2/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sqs:SendMessage",
+                              "Condition": {
+                                "ArnEquals": {
+                                  "aws:SourceArn": "arn:aws:sns:us-east-1:808326389482:aws-weathertop-central-sns-fanout-topic"
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuejavav2EC563343",
+                                  "Arn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "SNSTopicRolejavav2DefaultPolicy9508DABD",
+                        "roles": [
+                          {
+                            "Ref": "SNSTopicRolejavav2C6A4CC09"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.88.0"
+            }
+          },
+          "BatchExecutionRole-javav2": {
+            "id": "BatchExecutionRole-javav2",
+            "path": "ConsumerStack-javav2/BatchExecutionRole-javav2",
+            "children": {
+              "ImportBatchExecutionRole-javav2": {
+                "id": "ImportBatchExecutionRole-javav2",
+                "path": "ConsumerStack-javav2/BatchExecutionRole-javav2/ImportBatchExecutionRole-javav2",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/BatchExecutionRole-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "ecs-tasks.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/AdministratorAccess"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+                          ]
+                        ]
+                      }
+                    ],
+                    "policies": [
+                      {
+                        "policyName": "BatchLoggingPolicy",
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents",
+                                "logs:DescribeLogStreams"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "arn:aws:logs:*:*:*"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.88.0"
+            }
+          },
+          "Vpc": {
+            "id": "Vpc",
+            "path": "ConsumerStack-javav2/Vpc",
+            "children": {
+              "PublicSubnet1": {
+                "id": "PublicSubnet1",
+                "path": "ConsumerStack-javav2/Vpc/PublicSubnet1",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "PublicSubnet2": {
+                "id": "PublicSubnet2",
+                "path": "ConsumerStack-javav2/Vpc/PublicSubnet2",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "PublicSubnet3": {
+                "id": "PublicSubnet3",
+                "path": "ConsumerStack-javav2/Vpc/PublicSubnet3",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "PublicSubnet4": {
+                "id": "PublicSubnet4",
+                "path": "ConsumerStack-javav2/Vpc/PublicSubnet4",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "PublicSubnet5": {
+                "id": "PublicSubnet5",
+                "path": "ConsumerStack-javav2/Vpc/PublicSubnet5",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "PublicSubnet6": {
+                "id": "PublicSubnet6",
+                "path": "ConsumerStack-javav2/Vpc/PublicSubnet6",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.88.0"
+            }
+          },
+          "FargateEnv-javav2": {
+            "id": "FargateEnv-javav2",
+            "path": "ConsumerStack-javav2/FargateEnv-javav2",
+            "children": {
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "ConsumerStack-javav2/FargateEnv-javav2/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/FargateEnv-javav2/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "ConsumerStack-javav2/FargateEnv-javav2/SecurityGroup",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "vpcId": "vpc-00853ea8890f3162a"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/FargateEnv-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Batch::ComputeEnvironment",
+                  "aws:cdk:cloudformation:props": {
+                    "computeResources": {
+                      "maxvCpus": 256,
+                      "type": "FARGATE",
+                      "updateToLatestImageVersion": true,
+                      "securityGroupIds": [
+                        {
+                          "Fn::GetAtt": [
+                            "FargateEnvjavav2SecurityGroupBC367DC3",
+                            "GroupId"
+                          ]
+                        }
+                      ],
+                      "subnets": [
+                        "subnet-001c2ba191dfe3ea5",
+                        "subnet-03a321b213a18f743",
+                        "subnet-08646cf8b5512d2e7",
+                        "subnet-0820eacdd95a3087f",
+                        "subnet-0e020eddca0eed498",
+                        "subnet-046edb8aab65c4959"
+                      ]
+                    },
+                    "replaceComputeEnvironment": false,
+                    "state": "ENABLED",
+                    "type": "managed",
+                    "updatePolicy": {}
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_batch.CfnComputeEnvironment",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@aws-cdk/aws-batch-alpha.FargateComputeEnvironment",
+              "version": "2.88.0-alpha.0"
+            }
+          },
+          "ContainerDefinition-javav2": {
+            "id": "ContainerDefinition-javav2",
+            "path": "ConsumerStack-javav2/ContainerDefinition-javav2",
+            "constructInfo": {
+              "fqn": "@aws-cdk/aws-batch-alpha.EcsFargateContainerDefinition",
+              "version": "2.88.0-alpha.0"
+            }
+          },
+          "JobDefinition-javav2": {
+            "id": "JobDefinition-javav2",
+            "path": "ConsumerStack-javav2/JobDefinition-javav2",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/JobDefinition-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Batch::JobDefinition",
+                  "aws:cdk:cloudformation:props": {
+                    "containerProperties": {
+                      "image": "public.ecr.aws/b4v4v1s0/javav2:latest",
+                      "environment": [],
+                      "jobRoleArn": {
+                        "Fn::GetAtt": [
+                          "BatchExecutionRolejavav2745AFB37",
+                          "Arn"
+                        ]
+                      },
+                      "executionRoleArn": {
+                        "Fn::GetAtt": [
+                          "BatchExecutionRolejavav2745AFB37",
+                          "Arn"
+                        ]
+                      },
+                      "readonlyRootFilesystem": false,
+                      "resourceRequirements": [
+                        {
+                          "type": "MEMORY",
+                          "value": "2048"
+                        },
+                        {
+                          "type": "VCPU",
+                          "value": "1"
+                        }
+                      ],
+                      "fargatePlatformConfiguration": {},
+                      "networkConfiguration": {
+                        "assignPublicIp": "ENABLED"
+                      }
+                    },
+                    "platformCapabilities": [
+                      "FARGATE"
+                    ],
+                    "retryStrategy": {},
+                    "timeout": {
+                      "attemptDurationSeconds": 30000
+                    },
+                    "type": "container"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_batch.CfnJobDefinition",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@aws-cdk/aws-batch-alpha.EcsJobDefinition",
+              "version": "2.88.0-alpha.0"
+            }
+          },
+          "JobQueue-javav2": {
+            "id": "JobQueue-javav2",
+            "path": "ConsumerStack-javav2/JobQueue-javav2",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/JobQueue-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Batch::JobQueue",
+                  "aws:cdk:cloudformation:props": {
+                    "computeEnvironmentOrder": [
+                      {
+                        "computeEnvironment": {
+                          "Fn::GetAtt": [
+                            "FargateEnvjavav25F484E05",
+                            "ComputeEnvironmentArn"
+                          ]
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "priority": 1,
+                    "state": "ENABLED"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_batch.CfnJobQueue",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@aws-cdk/aws-batch-alpha.JobQueue",
+              "version": "2.88.0-alpha.0"
+            }
+          },
+          "BatchLambdaExecutionRole-javav2": {
+            "id": "BatchLambdaExecutionRole-javav2",
+            "path": "ConsumerStack-javav2/BatchLambdaExecutionRole-javav2",
+            "children": {
+              "ImportBatchLambdaExecutionRole-javav2": {
+                "id": "ImportBatchLambdaExecutionRole-javav2",
+                "path": "ConsumerStack-javav2/BatchLambdaExecutionRole-javav2/ImportBatchLambdaExecutionRole-javav2",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/BatchLambdaExecutionRole-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "Allows Lambda function to submit jobs to Batch",
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                          ]
+                        ]
+                      }
+                    ],
+                    "roleName": "BatchLambdaExecutionRole-javav2"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.88.0"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "ConsumerStack-javav2/BatchLambdaExecutionRole-javav2/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/BatchLambdaExecutionRole-javav2/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "batch:*",
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            },
+                            {
+                              "Action": [
+                                "sqs:ReceiveMessage",
+                                "sqs:ChangeMessageVisibility",
+                                "sqs:GetQueueUrl",
+                                "sqs:DeleteMessage",
+                                "sqs:GetQueueAttributes"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuejavav2EC563343",
+                                  "Arn"
+                                ]
+                              }
+                            },
+                            {
+                              "Action": "sqs:ReceiveMessage",
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "BatchJobQueuejavav2EC563343",
+                                  "Arn"
+                                ]
+                              }
+                            },
+                            {
+                              "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "BatchLambdaExecutionRolejavav2DefaultPolicy2997E507",
+                        "roles": [
+                          {
+                            "Ref": "BatchLambdaExecutionRolejavav27A2AF3A8"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.88.0"
+            }
+          },
+          "SubmitBatchJob-javav2": {
+            "id": "SubmitBatchJob-javav2",
+            "path": "ConsumerStack-javav2/SubmitBatchJob-javav2",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "ConsumerStack-javav2/SubmitBatchJob-javav2/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ConsumerStack-javav2/SubmitBatchJob-javav2/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.88.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ConsumerStack-javav2/SubmitBatchJob-javav2/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/SubmitBatchJob-javav2/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-667348412466-us-east-1",
+                      "s3Key": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "LANGUAGE_NAME": "javav2",
+                        "JOB_QUEUE": {
+                          "Fn::GetAtt": [
+                            "JobQueuejavav2923E863E",
+                            "JobQueueArn"
+                          ]
+                        },
+                        "JOB_DEFINITION": {
+                          "Ref": "JobDefinitionjavav2F391C900"
+                        },
+                        "JOB_NAME": "job-javav2"
+                      }
+                    },
+                    "handler": "submit_job.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "BatchLambdaExecutionRolejavav27A2AF3A8",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "python3.8"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.88.0"
+                }
+              },
+              "SqsEventSource:ConsumerStackjavav2BatchJobQueuejavav2CB765CFF": {
+                "id": "SqsEventSource:ConsumerStackjavav2BatchJobQueuejavav2CB765CFF",
+                "path": "ConsumerStack-javav2/SubmitBatchJob-javav2/SqsEventSource:ConsumerStackjavav2BatchJobQueuejavav2CB765CFF",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/SubmitBatchJob-javav2/SqsEventSource:ConsumerStackjavav2BatchJobQueuejavav2CB765CFF/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
+                      "aws:cdk:cloudformation:props": {
+                        "eventSourceArn": {
+                          "Fn::GetAtt": [
+                            "BatchJobQueuejavav2EC563343",
+                            "Arn"
+                          ]
+                        },
+                        "functionName": {
+                          "Ref": "SubmitBatchJobjavav2409C4036"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnEventSourceMapping",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.88.0"
+            }
+          },
+          "LogBucket": {
+            "id": "LogBucket",
+            "path": "ConsumerStack-javav2/LogBucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/LogBucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                  "version": "2.88.0"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "ConsumerStack-javav2/LogBucket/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/LogBucket/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "bucket": {
+                          "Ref": "LogBucketCC3B17E8"
+                        },
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:PutObject",
+                                "s3:PutObjectAcl",
+                                "s3:DeleteObject",
+                                "s3:ListBucket",
+                                "s3:GetObject"
+                              ],
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": [
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":role/LogsLambdaExecutionRole"
+                                      ]
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":root"
+                                      ]
+                                    ]
+                                  }
+                                ]
+                              },
+                              "Resource": [
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "LogBucketCC3B17E8",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                },
+                                {
+                                  "Fn::GetAtt": [
+                                    "LogBucketCC3B17E8",
+                                    "Arn"
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_s3.Bucket",
+              "version": "2.88.0"
+            }
+          },
+          "LogsLambdaExecutionRole": {
+            "id": "LogsLambdaExecutionRole",
+            "path": "ConsumerStack-javav2/LogsLambdaExecutionRole",
+            "children": {
+              "ImportLogsLambdaExecutionRole": {
+                "id": "ImportLogsLambdaExecutionRole",
+                "path": "ConsumerStack-javav2/LogsLambdaExecutionRole/ImportLogsLambdaExecutionRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/LogsLambdaExecutionRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "Allows Lambda function to get logs from CloudWatch",
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                          ]
+                        ]
+                      }
+                    ],
+                    "roleName": "LogsLambdaExecutionRole"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.88.0"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "ConsumerStack-javav2/LogsLambdaExecutionRole/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ConsumerStack-javav2/LogsLambdaExecutionRole/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "logs:GetLogEvents",
+                                "logs:DescribeLogStreams"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    "arn:aws:logs:us-east-1:",
+                                    {
+                                      "Ref": "AWS::AccountId"
+                                    },
+                                    ":*"
+                                  ]
+                                ]
+                              }
+                            },
+                            {
+                              "Action": [
+                                "s3:PutObject",
+                                "s3:PutObjectAcl",
+                                "s3:GetObject",
+                                "s3:ListBucket",
+                                "s3:DeleteObject"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:s3:::",
+                                      {
+                                        "Fn::GetAtt": [
+                                          "LogBucketCC3B17E8",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:s3:::",
+                                      {
+                                        "Fn::GetAtt": [
+                                          "LogBucketCC3B17E8",
+                                          "Arn"
+                                        ]
+                                      }
+                                    ]
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Action": [
+                                "s3:PutObject",
+                                "s3:PutObjectAcl",
+                                "s3:GetObject",
+                                "s3:ListBucket",
+                                "s3:DeleteObject"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                "arn:aws:s3:::aws-weathertop-central-log-bucket/*",
+                                "arn:aws:s3:::aws-weathertop-central-log-bucket"
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "LogsLambdaExecutionRoleDefaultPolicy296B17F5",
+                        "roles": [
+                          {
+                            "Ref": "LogsLambdaExecutionRole104B6366"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.88.0"
+            }
+          },
+          "BatchJobCompleteLambda": {
+            "id": "BatchJobCompleteLambda",
+            "path": "ConsumerStack-javav2/BatchJobCompleteLambda",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "ConsumerStack-javav2/BatchJobCompleteLambda/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ConsumerStack-javav2/BatchJobCompleteLambda/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.88.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ConsumerStack-javav2/BatchJobCompleteLambda/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.88.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.88.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/BatchJobCompleteLambda/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-667348412466-us-east-1",
+                      "s3Key": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "TOOL_NAME": "javav2",
+                        "LOCAL_BUCKET_NAME": {
+                          "Ref": "LogBucketCC3B17E8"
+                        },
+                        "ADMIN_BUCKET_NAME": "aws-weathertop-central-log-bucket"
+                      }
+                    },
+                    "handler": "export_logs.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "LogsLambdaExecutionRole104B6366",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "python3.8"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.88.0"
+            }
+          },
+          "BatchAllEventsRule": {
+            "id": "BatchAllEventsRule",
+            "path": "ConsumerStack-javav2/BatchAllEventsRule",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ConsumerStack-javav2/BatchAllEventsRule/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "eventPattern": {
+                      "source": [
+                        "aws.batch"
+                      ]
+                    },
+                    "state": "ENABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Fn::GetAtt": [
+                            "BatchJobCompleteLambda336A4359",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.88.0"
+                }
+              },
+              "AllowEventRuleConsumerStackjavav2BatchJobCompleteLambda8F725370": {
+                "id": "AllowEventRuleConsumerStackjavav2BatchJobCompleteLambda8F725370",
+                "path": "ConsumerStack-javav2/BatchAllEventsRule/AllowEventRuleConsumerStackjavav2BatchJobCompleteLambda8F725370",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunction",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "BatchJobCompleteLambda336A4359",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "events.amazonaws.com",
+                    "sourceArn": {
+                      "Fn::GetAtt": [
+                        "BatchAllEventsRuleFB9F754A",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.88.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "ConsumerStack-javav2/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "ConsumerStack-javav2/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.88.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "ConsumerStack-javav2/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.88.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "ConsumerStack-javav2/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.88.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.88.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.88.0"
+    }
+  }
+}

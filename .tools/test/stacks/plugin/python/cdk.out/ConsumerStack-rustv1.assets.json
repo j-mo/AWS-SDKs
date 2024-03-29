@@ -1,0 +1,34 @@
+{
+  "version": "32.0.0",
+  "files": {
+    "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0": {
+      "source": {
+        "path": "asset.09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "050288538048-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-050288538048-us-east-1",
+          "objectKey": "09a9e719a886f942b75af42530860c8f491b7493de7a2640b922eadadd7bbcd0.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::050288538048:role/cdk-hnb659fds-file-publishing-role-050288538048-us-east-1"
+        }
+      }
+    },
+    "131ea8825321963296670c1200ecebdaeaf2f2d2d19c74218ec2a7509b719c03": {
+      "source": {
+        "path": "ConsumerStack-rustv1.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "050288538048-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-050288538048-us-east-1",
+          "objectKey": "131ea8825321963296670c1200ecebdaeaf2f2d2d19c74218ec2a7509b719c03.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::050288538048:role/cdk-hnb659fds-file-publishing-role-050288538048-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

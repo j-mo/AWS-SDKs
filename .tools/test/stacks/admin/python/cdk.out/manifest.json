@@ -1,0 +1,95 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "ProducerStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ProducerStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ProducerStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://808326389482/us-east-1",
+      "properties": {
+        "templateFile": "ProducerStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-deploy-role-808326389482-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-cfn-exec-role-808326389482-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-808326389482-us-east-1/b5ed435011fff8974d0884663ddba7a81ab458f382fddccb9c0606fdc63b3a61.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ProducerStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-lookup-role-808326389482-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ProducerStack.assets"
+      ],
+      "metadata": {
+        "/ProducerStack/fanout-topic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "fanouttopic6EFF7954"
+          }
+        ],
+        "/ProducerStack/fanout-topic/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "fanouttopicPolicy0CD5CF6A"
+          }
+        ],
+        "/ProducerStack/aws-weathertop-central-log-bucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsweathertopcentrallogbucketA76E7C87"
+          }
+        ],
+        "/ProducerStack/aws-weathertop-central-log-bucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsweathertopcentrallogbucketPolicy944BF9D4"
+          }
+        ],
+        "/ProducerStack/trigger-rule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "triggerruleC9B6D4A3"
+          }
+        ],
+        "/ProducerStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ProducerStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ProducerStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ProducerStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

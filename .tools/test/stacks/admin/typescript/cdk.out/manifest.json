@@ -1,0 +1,94 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "AdminStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "AdminStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "AdminStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://808326389482/us-east-1",
+      "properties": {
+        "templateFile": "AdminStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-deploy-role-808326389482-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-cfn-exec-role-808326389482-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-808326389482-us-east-1/d5f35dbf87bf05617aeae6506ffd9ed90016dda3e0c4b7bf94de73a9babf388f.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "AdminStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::808326389482:role/cdk-hnb659fds-lookup-role-808326389482-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "AdminStack.assets"
+      ],
+      "metadata": {
+        "/AdminStack/fanout-topic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "fanouttopic6EFF7954"
+          }
+        ],
+        "/AdminStack/fanout-topic/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "fanouttopicPolicy0CD5CF6A"
+          }
+        ],
+        "/AdminStack/aws-weathertop-admin-log-bucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsweathertopadminlogbucket8DE9D8E4"
+          }
+        ],
+        "/AdminStack/aws-weathertop-admin-log-bucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsweathertopadminlogbucketPolicyEC70ED5D"
+          }
+        ],
+        "/AdminStack/trigger-rule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "triggerruleC9B6D4A3"
+          }
+        ],
+        "/AdminStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/AdminStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/AdminStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "AdminStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

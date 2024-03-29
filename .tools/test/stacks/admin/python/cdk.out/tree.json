@@ -1,0 +1,385 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "ProducerStack": {
+        "id": "ProducerStack",
+        "path": "ProducerStack",
+        "children": {
+          "fanout-topic": {
+            "id": "fanout-topic",
+            "path": "ProducerStack/fanout-topic",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ProducerStack/fanout-topic/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SNS::Topic",
+                  "aws:cdk:cloudformation:props": {
+                    "topicName": "aws-weathertop-central-sns-fanout-topic"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.CfnTopic",
+                  "version": "2.104.0"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "ProducerStack/fanout-topic/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ProducerStack/fanout-topic/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SNS::TopicPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "SNS:AddPermission",
+                                "SNS:DeleteTopic",
+                                "SNS:GetTopicAttributes",
+                                "SNS:ListSubscriptionsByTopic",
+                                "SNS:SetTopicAttributes",
+                                "SNS:Subscribe",
+                                "SNS:RemovePermission",
+                                "SNS:Publish"
+                              ],
+                              "Condition": {
+                                "StringEquals": {
+                                  "AWS:SourceOwner": {
+                                    "Ref": "AWS::AccountId"
+                                  }
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": "*"
+                              },
+                              "Resource": {
+                                "Ref": "fanouttopic6EFF7954"
+                              },
+                              "Sid": "0"
+                            },
+                            {
+                              "Action": "SNS:Subscribe",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": [
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":root"
+                                      ]
+                                    ]
+                                  },
+                                  "arn:aws:iam::770244195820:root",
+                                  "arn:aws:iam::441997275833:root",
+                                  "arn:aws:iam::234521034040:root",
+                                  "arn:aws:iam::875008041426:root",
+                                  "arn:aws:iam::667348412466:root",
+                                  "arn:aws:iam::471951630130:root",
+                                  "arn:aws:iam::733931915187:root",
+                                  "arn:aws:iam::664857444588:root",
+                                  "arn:aws:iam::616362385685:root",
+                                  "arn:aws:iam::050288538048:root",
+                                  "arn:aws:iam::637397754108:root"
+                                ]
+                              },
+                              "Resource": {
+                                "Ref": "fanouttopic6EFF7954"
+                              },
+                              "Sid": "1"
+                            },
+                            {
+                              "Action": "SNS:Publish",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": [
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":root"
+                                      ]
+                                    ]
+                                  },
+                                  "arn:aws:iam::770244195820:root",
+                                  "arn:aws:iam::441997275833:root",
+                                  "arn:aws:iam::234521034040:root",
+                                  "arn:aws:iam::875008041426:root",
+                                  "arn:aws:iam::667348412466:root",
+                                  "arn:aws:iam::471951630130:root",
+                                  "arn:aws:iam::733931915187:root",
+                                  "arn:aws:iam::664857444588:root",
+                                  "arn:aws:iam::616362385685:root",
+                                  "arn:aws:iam::050288538048:root",
+                                  "arn:aws:iam::099736152523:root",
+                                  "arn:aws:iam::637397754108:root"
+                                ],
+                                "Service": "events.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Ref": "fanouttopic6EFF7954"
+                              },
+                              "Sid": "2"
+                            },
+                            {
+                              "Action": "sns:Publish",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "events.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Ref": "fanouttopic6EFF7954"
+                              },
+                              "Sid": "3"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "topics": [
+                          {
+                            "Ref": "fanouttopic6EFF7954"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sns.CfnTopicPolicy",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.TopicPolicy",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sns.Topic",
+              "version": "2.104.0"
+            }
+          },
+          "aws-weathertop-central-log-bucket": {
+            "id": "aws-weathertop-central-log-bucket",
+            "path": "ProducerStack/aws-weathertop-central-log-bucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ProducerStack/aws-weathertop-central-log-bucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "bucketName": "aws-weathertop-central-log-bucket",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                  "version": "2.104.0"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "ProducerStack/aws-weathertop-central-log-bucket/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ProducerStack/aws-weathertop-central-log-bucket/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "bucket": {
+                          "Ref": "awsweathertopcentrallogbucketA76E7C87"
+                        },
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:PutObject",
+                                "s3:PutObjectAcl",
+                                "s3:DeleteObject",
+                                "s3:ListBucket",
+                                "s3:GetObject"
+                              ],
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": [
+                                  "arn:aws:iam::770244195820:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::441997275833:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::234521034040:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::875008041426:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::667348412466:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::471951630130:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::733931915187:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::664857444588:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::616362385685:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::050288538048:role/LogsLambdaExecutionRole",
+                                  "arn:aws:iam::637397754108:role/LogsLambdaExecutionRole",
+                                  {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":root"
+                                      ]
+                                    ]
+                                  }
+                                ]
+                              },
+                              "Resource": [
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "awsweathertopcentrallogbucketA76E7C87",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                },
+                                {
+                                  "Fn::GetAtt": [
+                                    "awsweathertopcentrallogbucketA76E7C87",
+                                    "Arn"
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
+                      "version": "2.104.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_s3.Bucket",
+              "version": "2.104.0"
+            }
+          },
+          "trigger-rule": {
+            "id": "trigger-rule",
+            "path": "ProducerStack/trigger-rule",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ProducerStack/trigger-rule/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "scheduleExpression": "cron(0 * * * ? *)",
+                    "state": "ENABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Ref": "fanouttopic6EFF7954"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.104.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "ProducerStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "ProducerStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.104.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "ProducerStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.104.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "ProducerStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.104.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.104.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.104.0"
+    }
+  }
+}

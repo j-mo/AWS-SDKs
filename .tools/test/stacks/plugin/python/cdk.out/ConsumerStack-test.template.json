@@ -1,0 +1,237 @@
+{
+ "Resources": {
+  "BatchExecutionRoletestbatch27E82413": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/BatchExecutionRole-test-batch/Resource"
+   }
+  },
+  "BatchExecutionRoletesttask48F1E8C2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AdministratorAccess"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/BatchExecutionRole-test-task/Resource"
+   }
+  },
+  "JobDefinitiontest68B44AD2": {
+   "Type": "AWS::Batch::JobDefinition",
+   "Properties": {
+    "ContainerProperties": {
+     "Command": [
+      "s3",
+      "ls"
+     ],
+     "Environment": [],
+     "ExecutionRoleArn": {
+      "Fn::GetAtt": [
+       "BatchExecutionRoletestbatch27E82413",
+       "Arn"
+      ]
+     },
+     "FargatePlatformConfiguration": {},
+     "Image": "public.ecr.aws/aws-cli/aws-cli",
+     "JobRoleArn": {
+      "Fn::GetAtt": [
+       "BatchExecutionRoletesttask48F1E8C2",
+       "Arn"
+      ]
+     },
+     "NetworkConfiguration": {
+      "AssignPublicIp": "ENABLED"
+     },
+     "ReadonlyRootFilesystem": false,
+     "ResourceRequirements": [
+      {
+       "Type": "MEMORY",
+       "Value": "2048"
+      },
+      {
+       "Type": "VCPU",
+       "Value": "1"
+      }
+     ]
+    },
+    "PlatformCapabilities": [
+     "FARGATE"
+    ],
+    "RetryStrategy": {},
+    "Timeout": {
+     "AttemptDurationSeconds": 30000
+    },
+    "Type": "container"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/JobDefinition-test/Resource"
+   }
+  },
+  "JobQueuetestBE50B685": {
+   "Type": "AWS::Batch::JobQueue",
+   "Properties": {
+    "ComputeEnvironmentOrder": [
+     {
+      "ComputeEnvironment": {
+       "Fn::GetAtt": [
+        "FargateEnvtest60B0946A",
+        "ComputeEnvironmentArn"
+       ]
+      },
+      "Order": 1
+     }
+    ],
+    "Priority": 1,
+    "State": "ENABLED"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/JobQueue-test/Resource"
+   }
+  },
+  "FargateEnvtestSecurityGroupCD2FF4A9": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "ConsumerStack-test/FargateEnv-test/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": "vpc-0c4a8ac37436f701a"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/FargateEnv-test/SecurityGroup/Resource"
+   }
+  },
+  "FargateEnvtest60B0946A": {
+   "Type": "AWS::Batch::ComputeEnvironment",
+   "Properties": {
+    "ComputeResources": {
+     "MaxvCpus": 256,
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "FargateEnvtestSecurityGroupCD2FF4A9",
+        "GroupId"
+       ]
+      }
+     ],
+     "Subnets": [
+      "subnet-0155e9561863fdcca",
+      "subnet-099591e1bbcc9328c",
+      "subnet-01956184cb64b1999",
+      "subnet-069f1c45108e64148",
+      "subnet-05ddd6f4a04ad984c",
+      "subnet-06a225ba1d4ccfa85"
+     ],
+     "Type": "FARGATE",
+     "UpdateToLatestImageVersion": true
+    },
+    "ReplaceComputeEnvironment": false,
+    "State": "ENABLED",
+    "Type": "managed",
+    "UpdatePolicy": {}
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/FargateEnv-test/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WOTW6DQAyFz8J+cEiyybISTSt11ZIDVGbqFCfgQYMnVTSauxcCihp19ez3/PNtYLeDWGT4M+T265y3XEM8KNqzGa3PyNhBrFxLpjzKpMnUqLaBOPZvrn6mIwsrOzGz8REo3IZL1/VBaS8X9k46Ek2G7Ga8TjZ41uurd6GfJh+MlExFgwvezi+XOpkix7ZvEIrsaYFdTXqjWaK4t8ML+m9UKp0ospD/Azimj8R33PvSP+Rk3q/aOFltYb2GbXYamHMfRLkjqGb9BZa2fOFEAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ConsumerStack-test/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
